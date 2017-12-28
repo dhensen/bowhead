@@ -31,6 +31,7 @@ class Kernel extends ConsoleKernel
         Commands\RandomWalkCommand::class,
         Commands\FxStreamCommand::class,
 		Commands\KrakenStreamCommand::class,
+        Commands\PoloniexWebsocketCommand::class,
     ];
 
     /**
