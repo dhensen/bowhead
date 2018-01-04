@@ -173,7 +173,7 @@ trait Mapper
      */
     public function mapperAccounts($source, $data)
     {
-       switch ($source) {
+        switch ($source) {
            case 'Whaleclub':
                $instance = new Whaleclub('BTC/USD');
                break;

@@ -21,5 +21,4 @@ class bh_exchanges extends Model
      * @var array
      */
     protected $fillable = ['exchange', 'hasFetchTickers', 'hasFetchOHLCV', 'use', 'data', 'updated_at', 'created_at', 'deleted_at'];
-
 }

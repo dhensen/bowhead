@@ -19,7 +19,8 @@ use DateTime;
  *          One Broker API wrapper..
  *          https://1broker.com/?c=en/content/api-documentation
  */
-class OneBroker {
+class OneBroker
+{
     /**
      * @var mixed
      */
@@ -51,9 +52,9 @@ class OneBroker {
             $toCache = array();
             $categories = $this->getCategories();
             $categories = $categories['body']['response'];
-            foreach($categories as $category) {
-               $lists              = $this->getCategories($category);
-               $toCache[$category] = $lists['body']['response'];
+            foreach ($categories as $category) {
+                $lists              = $this->getCategories($category);
+                $toCache[$category] = $lists['body']['response'];
             }
             \Cache::put('ONEBROKER::symbols', $toCache, 60*24*7);
             $this->symbols = \Cache::get('ONEBROKER::symbols');
@@ -61,8 +62,8 @@ class OneBroker {
         /**
          *  we want to keep this fresh, but not be crazy about it.
          */
-        $update = (rand(1,100) == 85 ? 1 : 0);
-        if (!\Cache::has('ONEBROKER::symbols::detail::BTCUSD') ) {
+        $update = (rand(1, 100) == 85 ? 1 : 0);
+        if (!\Cache::has('ONEBROKER::symbols::detail::BTCUSD')) {
             $update = 1; /** this is the first run kind of thing */
         }
         if ($update) {
@@ -72,7 +73,6 @@ class OneBroker {
                 }
             }
         }
-
     }
 
     /**
@@ -81,9 +81,10 @@ class OneBroker {
      *
      * @return bool|int
      */
-    public function get_timezone_offset($remote_tz, $origin_tz = null) {
-        if($origin_tz === null) {
-            if(!is_string($origin_tz = date_default_timezone_get())) {
+    public function get_timezone_offset($remote_tz, $origin_tz = null)
+    {
+        if ($origin_tz === null) {
+            if (!is_string($origin_tz = date_default_timezone_get())) {
                 return false; // A UTC timestamp was returned -- bail out!
             }
         }
@@ -102,11 +103,11 @@ class OneBroker {
      *
      * @return string
      */
-    function changeTimeZone($dateString, $timeZoneSource = null, $timeZoneTarget = null)
+    public function changeTimeZone($dateString, $timeZoneSource = null, $timeZoneTarget = null)
     {
         // this formatting was causing issues
-        $dateString = str_replace('T',' ', $dateString);
-        $dateString = str_replace('Z','', $dateString);
+        $dateString = str_replace('T', ' ', $dateString);
+        $dateString = str_replace('Z', '', $dateString);
 
         if (empty($timeZoneSource)) {
             $timeZoneSource = date_default_timezone_get();
@@ -148,7 +149,7 @@ class OneBroker {
         $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         curl_close($curl);
 
-        if($statusCode != 200) {
+        if ($statusCode != 200) {
             error_log('STATUS CODE', $statusCode . ' ' . $response);
         }
 
@@ -205,7 +206,7 @@ class OneBroker {
             return \Cache::get('ONEBROKER::symbols::detail::'.$symbol);
         } else {
             $data = $this->getApiData('market/details.php', ['symbol' => $symbol]);
-            \Cache::put('ONEBROKER::symbols::detail::'.$symbol, $data, (60*24 * rand(14,28) + rand(1,15000)));
+            \Cache::put('ONEBROKER::symbols::detail::'.$symbol, $data, (60*24 * rand(14, 28) + rand(1, 15000)));
             return $data;
         }
     }
@@ -220,7 +221,7 @@ class OneBroker {
         } else {
             foreach ($this->symbols as $cat => $_symbols) {
                 foreach ($_symbols as $arr) {
-                   $symbols[] = $arr['symbol'];
+                    $symbols[] = $arr['symbol'];
                 }
             }
             \Cache::put('ONEBROKER::allSymbols', $symbols, 86400);
@@ -329,7 +330,7 @@ class OneBroker {
                 }
             } else {
                 $return[$symbol]['minutesUntilClose']  = ($close - $minOfWeek);
-                $return[$symbol]['hoursUntilClose']    = round(($close - $minOfWeek)/60,2);
+                $return[$symbol]['hoursUntilClose']    = round(($close - $minOfWeek)/60, 2);
             }
 
             $daily_break_start    = explode(':', $details['market_hours']['daily_break_start']);
@@ -347,7 +348,7 @@ class OneBroker {
                     $return[$symbol]['trade']     = 0;
                     $return[$symbol]['reason']    = 'daily_break';
                 }
-            /** no this is a short break */
+                /** no this is a short break */
             } else {
                 $start    = ($daily_break_start[0]*60) + $daily_break_start[1];
                 $stop     = ($daily_break_stop[0]*60) + $daily_break_stop[1];
@@ -361,14 +362,14 @@ class OneBroker {
                 $dbs_day                              = ($daily_break_start[0]*60) + $daily_break_start[1];
                 if ($minOfDay < $dbs_day) {
                     $return[$symbol]['minsUntilBreak'] = abs($dbs_day - $minOfDay);
-                    $return[$symbol]['hoursUntilBreak'] = abs(round(($dbs_day - $minOfDay) / 60,2));
+                    $return[$symbol]['hoursUntilBreak'] = abs(round(($dbs_day - $minOfDay) / 60, 2));
                 }
             }
 
             if ($return[$symbol]['trade'] == 0 && $return[$symbol]['reason'] == 'daily_break') {
                 $dbs_day                              = ($daily_break_start[0]*60) + $daily_break_start[1];
                 $return[$symbol]['minsLeftBreak']     = abs($dbs_day - $minOfDay);
-                $return[$symbol]['hoursLeftBreak']    = abs(round(($dbs_day - $minOfDay)/60,2));
+                $return[$symbol]['hoursLeftBreak']    = abs(round(($dbs_day - $minOfDay)/60, 2));
             }
         }
         return $return;
@@ -409,7 +410,7 @@ class OneBroker {
 
         $start  = strtotime($_start);
         $end    = strtotime($_end);
-        while($start<$end) {
+        while ($start<$end) {
             $start    = ceil($start/$resolution)*$resolution;
             $datekey  = date('Y-m-d\TH:i:s\Z', $start);
             $cachekey = "ONEBROKER::historical::$symbol::$resolution::$datekey";
@@ -433,17 +434,19 @@ class OneBroker {
         ]);
 
         $data['body']['response'] += $cache_return;
-        usort($data['body']['response'], function($a, $b) { return($a['date'] < $b['date']); });
+        usort($data['body']['response'], function ($a, $b) {
+            return($a['date'] < $b['date']);
+        });
 
-        foreach($data['body']['response'] as $key => $dat) {
+        foreach ($data['body']['response'] as $key => $dat) {
             $cachekey = "ONEBROKER::historical::$symbol::$resolution::".$data['body']['response'][$key]['date'];
             \Cache::put($cachekey, $data['body']['response'][$key], 60*24*7);
             $thisdate = $this->changeTimeZone($dat['date'], 'UTC', env('TIMEZONE'));
             $data['body']['response'][$key]['date'] = $thisdate;
 
             $check = \DB::table('oneBrokerHist')
-                ->where('symbol',$symbol)
-                ->where('buckettime',$thisdate)
+                ->where('symbol', $symbol)
+                ->where('buckettime', $thisdate)
                 ->first();
             if (!$check) {
                 $tmp = [
@@ -505,7 +508,7 @@ class OneBroker {
     public function getCpu()
     {
         # /user/quota_status.php (response[])  cpu_time_left
-        $data = $this->getApiData('user/quota_status.php',[]);
+        $data = $this->getApiData('user/quota_status.php', []);
         return $data;
     }
 
@@ -515,7 +518,7 @@ class OneBroker {
     public function getOpenOrders()
     {
         #/order/open.php (response[])
-        $data = $this->getApiData('order/open.php',[]);
+        $data = $this->getApiData('order/open.php', []);
         return $data;
     }
 
@@ -525,7 +528,7 @@ class OneBroker {
     public function getOpenPositions()
     {
         # position/open.php (response()[])
-        $data = $this->getApiData('position/open.php',[]);
+        $data = $this->getApiData('position/open.php', []);
         return $data;
     }
 
@@ -535,7 +538,7 @@ class OneBroker {
     public function getPositionHistory()
     {
         # position/history.php (response()[])
-        $data = $this->getApiData('position/history.php',[]);
+        $data = $this->getApiData('position/history.php', []);
         return $data;
     }
 
@@ -547,7 +550,7 @@ class OneBroker {
     public function createOrder($data)
     {
         // /order/create.php (response[]->order_id and all items from $params with date_created)
-        $data = $this->getApiData('order/create.php',[
+        $data = $this->getApiData('order/create.php', [
              'symbol'               => $data['symbol'] # String
             ,'margin'               => $data['margin'] # margin
             ,'direction'            => $data['direction']  # long or short
@@ -570,7 +573,7 @@ class OneBroker {
     public function cancelOrder($order_id)
     {
         # order/cancel.php?order_id= (response->null)
-        $data = $this->getApiData('order/cancel.php',['order_id'=>$order_id]);
+        $data = $this->getApiData('order/cancel.php', ['order_id'=>$order_id]);
         return $data;
     }
 
@@ -585,7 +588,7 @@ class OneBroker {
     public function positionEdit($position_id, $stop_loss, $take_profit, $trailing_stop_loss)
     {
         # position/edit.php
-        $data = $this->getApiData('position/edit.php',[
+        $data = $this->getApiData('position/edit.php', [
              'position_id'       =>$position_id
             ,'stop_loss'         =>$stop_loss
             ,'take_profit'       =>$take_profit
@@ -602,7 +605,7 @@ class OneBroker {
     public function positionClose($position_id)
     {
         # position/close.php
-        $data = $this->getApiData('position/close.php',['position_id'=>$position_id]);
+        $data = $this->getApiData('position/close.php', ['position_id'=>$position_id]);
         return $data;
     }
 
@@ -614,7 +617,7 @@ class OneBroker {
     public function positionCloseCancel($position_id)
     {
         # position/close_cancel.php
-        $data = $this->getApiData('position/close_cancel.php',['position_id'=>$position_id]);
+        $data = $this->getApiData('position/close_cancel.php', ['position_id'=>$position_id]);
         return $data;
     }
 
@@ -626,7 +629,7 @@ class OneBroker {
     public function positionSharedGet($position_id)
     {
         # position/shared/get.php
-        $data = $this->getApiData('position/shared/get.php',['position_id'=>$position_id]);
+        $data = $this->getApiData('position/shared/get.php', ['position_id'=>$position_id]);
         return $data;
     }
 
@@ -636,7 +639,7 @@ class OneBroker {
      */
     public function userDetailsGet()
     {
-        $data = $this->getApiData('user/details.php',[]);
+        $data = $this->getApiData('user/details.php', []);
         return $data;
     }
 
@@ -646,7 +649,7 @@ class OneBroker {
      */
     public function userOverviewGet()
     {
-        $data = $this->getApiData('user/overview.php',[]);
+        $data = $this->getApiData('user/overview.php', []);
         return $data;
     }
 }

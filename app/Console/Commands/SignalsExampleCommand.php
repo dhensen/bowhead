@@ -14,8 +14,8 @@ use AndreasGlaser\PPC\PPC; // https://github.com/andreas-glaser/poloniex-php-cli
  * Class ExampleCommand
  * @package Bowhead\Console\Commands
  */
-class SignalsExampleCommand extends Command {
-
+class SignalsExampleCommand extends Command
+{
     use Signals, OHLC;
 
     /**
@@ -35,9 +35,15 @@ class SignalsExampleCommand extends Command {
 
     public function doColor($val)
     {
-        if ($val == 0){ return 'none'; }
-        if ($val == 1){ return 'green'; }
-        if ($val == -1){ return 'magenta'; }
+        if ($val == 0) {
+            return 'none';
+        }
+        if ($val == 1) {
+            return 'green';
+        }
+        if ($val == -1) {
+            return 'magenta';
+        }
         return 'none';
     }
 
@@ -51,24 +57,22 @@ class SignalsExampleCommand extends Command {
         echo "PRESS 'q' TO QUIT AND CLOSE ALL POSITIONS\n\n\n";
         stream_set_blocking(STDIN, 0);
 
-        while(1){
-			$instruments = ['BTC/USD'];
-			
-			$util        = new Util\BrokersUtil();
-			$console     = new \Bowhead\Util\Console();
-			$indicators  = new \Bowhead\Util\Indicators();
+        while (1) {
+            $instruments = ['BTC/USD'];
+            
+            $util        = new Util\BrokersUtil();
+            $console     = new \Bowhead\Util\Console();
+            $indicators  = new \Bowhead\Util\Indicators();
 
-			$this->signals(false, false, $instruments);
+            $this->signals(false, false, $instruments);
 
-			$back = $this->signals(1,2, $instruments);
-			print_r($back);
+            $back = $this->signals(1, 2, $instruments);
+            print_r($back);
 
-			sleep(5);
-		}
+            sleep(5);
+        }
 
 
         return null;
     }
-
-
 }

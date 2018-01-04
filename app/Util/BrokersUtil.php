@@ -47,19 +47,20 @@ class BrokersUtil
      * Generate a unique GUID
      * probably don't use this.
      */
-    public function guid(){
-        if (function_exists('com_create_guid')){
+    public function guid()
+    {
+        if (function_exists('com_create_guid')) {
             return com_create_guid();
-        }else{
+        } else {
             mt_srand((double)microtime()*10000);//optional for php 4.2.0 and up.
             $charid = strtoupper(md5(uniqid(rand(), true)));
             $hyphen = chr(45);// "-"
             // "{"  chr(123)
             $uuid =  substr($charid, 0, 8).$hyphen
                 .substr($charid, 8, 4).$hyphen
-                .substr($charid,12, 4).$hyphen
-                .substr($charid,16, 4).$hyphen
-                .substr($charid,20,12);// "}"  chr(125)
+                .substr($charid, 12, 4).$hyphen
+                .substr($charid, 16, 4).$hyphen
+                .substr($charid, 20, 12);// "}"  chr(125)
             return $uuid;
         }
     }
@@ -68,8 +69,9 @@ class BrokersUtil
      * @return string
      * we don't need this.. probably don't use.
      */
-    public function generate_id() {
-        return base_convert(time()+mt_rand(1,99), 10 , 36);
+    public function generate_id()
+    {
+        return base_convert(time()+mt_rand(1, 99), 10, 36);
     }
 
     /**
@@ -116,7 +118,7 @@ class BrokersUtil
         \Cache::has('key'); # does key exist
         \Cache::get(); # get the value of key
         \Cache::pull('key'); # get and delete
-        \Cache::put('key',$amount, $minutes); # add/update
+        \Cache::put('key', $amount, $minutes); # add/update
         \Cache::add('key', 'value', $minutes); # Store If Not Present
 
         \Cache::increment('key', $amount=1); # increase by $amount
@@ -159,7 +161,7 @@ class BrokersUtil
             $ret['close'][]  = $data->close;
             $ret['volume'][] = $data->volume;
         }
-        foreach($ret as $key => $rettemmp) {
+        foreach ($ret as $key => $rettemmp) {
             $ret[$key] = array_reverse($rettemmp);
         }
         return $ret;
@@ -183,7 +185,7 @@ class BrokersUtil
             $ret['close'][]  = $data['c'];
             $ret['volume'][] = 0;
         }
-        foreach($ret as $key => $rettemmp) {
+        foreach ($ret as $key => $rettemmp) {
             $ret[$key] = array_reverse($rettemmp);
         }
         return $ret;
@@ -202,7 +204,7 @@ class BrokersUtil
          *  doing identical pulls for signals.
          */
         $key = 'recent::'.$pair.'::'.$limit."::$day_data::$hour::$returnRS";
-        if(\Cache::has($key)) {
+        if (\Cache::has($key)) {
             return \Cache::get($key);
         }
 
@@ -261,7 +263,9 @@ class BrokersUtil
         $Mean = 0;
         for ($a=0; $a<count($arr); $a++) {
             $div = $Max-$Min;
-            if($div == 0){$div = 1;}
+            if ($div == 0) {
+                $div = 1;
+            }
             $arr [$a] = (($arr[$a]-$Min) / ($div)) * ($HI-$LO) % $LO;
             $Mean  = $arr[$a] / count($arr);
         }

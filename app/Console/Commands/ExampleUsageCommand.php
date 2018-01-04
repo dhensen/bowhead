@@ -68,14 +68,14 @@ class ExampleUsageCommand extends Command
         $onebroker = new OneBroker();
         $cointbase = new Coinbase();
         $poloniex  = new PPC(env('POLONIEX_API'), env('POLONIEX_SECRET'));
-        $bitfinex  = new Bitfinex(env('BITFINIX_KEY'),env('BITFINIX_SECRET'));
+        $bitfinex  = new Bitfinex(env('BITFINIX_KEY'), env('BITFINIX_SECRET'));
 
         $stop = $warn = false;
 
         echo $console->colorize("\nSee the tutorial: \nhttps://medium.com/@joeldg/an-advanced-tutorial-a-new-crypto-currency-trading-bot-boilerplate-framework-e777733607a\n", 'yellow');
 
         if (!function_exists('trader_sma')) {
-            echo $console->colorize("\nYou are missing the required Trader extension http://php.net/manual/en/book.trader.php",'reverse');
+            echo $console->colorize("\nYou are missing the required Trader extension http://php.net/manual/en/book.trader.php", 'reverse');
             echo $console->colorize("\n`TO INSTALL:");
             echo $console->colorize("\n`curl -O http://pear.php.net/go-pear.phar`");
             echo $console->colorize("\n`sudo php -d detect_unicode=0 go-pear.phar`");
@@ -84,8 +84,8 @@ class ExampleUsageCommand extends Command
             return null;
         }
         if (empty(env('WHALECLUB_TOKEN'))) {
-            echo $console->colorize("\nThis account type is required for the tutorial.",'reverse');
-            echo $console->colorize("\nSignup on Whaleclub: Use https://whaleclub.co/join/tn6uE for 30% deposit bonus.\n\n",'yellow');
+            echo $console->colorize("\nThis account type is required for the tutorial.", 'reverse');
+            echo $console->colorize("\nSignup on Whaleclub: Use https://whaleclub.co/join/tn6uE for 30% deposit bonus.\n\n", 'yellow');
             $stop = true;
             return null;
         } else {
@@ -104,7 +104,7 @@ class ExampleUsageCommand extends Command
         }
 
         if (empty(env('CBKEY'))) {
-            echo $console->colorize("\nSign up for a Coinbase/GDAX account: Use https://www.coinbase.com/join/51950ca286c21b84dd000021 for bonus",'yellow');
+            echo $console->colorize("\nSign up for a Coinbase/GDAX account: Use https://www.coinbase.com/join/51950ca286c21b84dd000021 for bonus", 'yellow');
             $warn = true;
         } else {
             $account = $cointbase->getAccount();
@@ -113,7 +113,7 @@ class ExampleUsageCommand extends Command
         }
 
         if (empty(env('BITFINIX_KEY'))) {
-            echo $console->colorize("\nSign up for a Bitfinex account: https://www.bitfinex.com",'red');
+            echo $console->colorize("\nSign up for a Bitfinex account: https://www.bitfinex.com", 'red');
             $stop = true;
         } else {
             $account = $bitfinex->account_info();
@@ -122,7 +122,7 @@ class ExampleUsageCommand extends Command
         }
 
         if (empty(env('OANDA_TOKEN'))) {
-            echo $console->colorize("\nSign up for a Oanda account: https://www.oanda.com/",'red');
+            echo $console->colorize("\nSign up for a Oanda account: https://www.oanda.com/", 'red');
             $stop = true;
         }
         if (empty(env('POLONIEX_API'))) {
@@ -155,7 +155,7 @@ class ExampleUsageCommand extends Command
             }
         }//*/
 
-        if($cand = $candles->allCandles()){
+        if ($cand = $candles->allCandles()) {
             echo $console->colorize("Candles on sample data\n");
             echo $console->tableFormatArray(array_dot($cand));
         } else {
@@ -163,14 +163,14 @@ class ExampleUsageCommand extends Command
             echo $console->colorize("\nCould not load candles, did you import the sample data?\n");
         }
 
-        if($ind = $indicators->allSignals()){
+        if ($ind = $indicators->allSignals()) {
             echo $console->colorize("Signals on sample data\n");
             echo $console->tableFormatArray(array_dot($ind));
         } else {
             echo $console->colorize("\nCould not load signals, did you import the sample data?\n");
         }
 
-        echo $console->colorize("\nLooks good",'green');
+        echo $console->colorize("\nLooks good", 'green');
         echo "\n";
     }
 }

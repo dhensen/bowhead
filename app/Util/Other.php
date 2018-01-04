@@ -21,14 +21,15 @@ class Other
      *  Volume weighted average price..
      *  not fully implemented yet
      */
-    public function vwap($orders) {
+    public function vwap($orders)
+    {
         $count = count($orders);
         $shares = $total = 0;
         foreach ($orders as $order) {
             $shares += $order['size'];
             $total += $order['size'] * $order['price'];
         }
-        return ($shares == 0 ? 0 : round($total/$shares,2));
+        return ($shares == 0 ? 0 : round($total/$shares, 2));
     }
 
     /**
@@ -42,7 +43,8 @@ class Other
      */
     public function ahrens_moving_average($input_data,	// data to be smoothed
                                    $period,		// smoothing window
-                                   $x_end) {	// end of input data
+                                   $x_end)
+    {	// end of input data
 
         //--------------------------------------------------------------
         // create the output array
@@ -92,5 +94,4 @@ class Other
 
         return $avg;
     }
-
 }

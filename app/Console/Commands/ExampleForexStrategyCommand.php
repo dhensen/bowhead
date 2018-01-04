@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use AndreasGlaser\PPC\PPC; // https://github.com/andreas-glaser/poloniex-php-client
 
-
 /**
  * Class ExampleForexCommand
  * @package Bowhead\Console\Commands
@@ -67,10 +66,10 @@ class ExampleForexStrategyCommand extends Command
      */
     public function shutdown()
     {
-        if (!is_array($this->indicator_positions)){
+        if (!is_array($this->indicator_positions)) {
             return 0;
         }
-        foreach($this->indicator_positions as $key => $val) {
+        foreach ($this->indicator_positions as $key => $val) {
             echo "closing $key - $val\n";
             $this->wc->positionClose($val);
         }
@@ -79,9 +78,15 @@ class ExampleForexStrategyCommand extends Command
 
     public function doColor($val)
     {
-        if ($val == 0){ return 'none'; }
-        if ($val == 1){ return 'green'; }
-        if ($val == -1){ return 'magenta'; }
+        if ($val == 0) {
+            return 'none';
+        }
+        if ($val == 1) {
+            return 'green';
+        }
+        if ($val == -1) {
+            return 'magenta';
+        }
         return 'none';
     }
 
@@ -107,14 +112,14 @@ class ExampleForexStrategyCommand extends Command
         /**
          *  Enter a loop where we check the strategy every minute.
          */
-        while(1) {
+        while (1) {
             if (ord(fgetc(STDIN)) == 113) { // try to catch keypress 'q'
                 echo "QUIT detected...";
                 return null;
             }
             echo "\n";
 
-            foreach($instruments as $instrument) {
+            foreach ($instruments as $instrument) {
                 $buy = $sell = 0;
                 $recentData = $this->getRecentData($instrument);
                 $adx         = $indicators->adx($instrument, $recentData);
@@ -179,9 +184,7 @@ class ExampleForexStrategyCommand extends Command
                     print_r($position);
                 }
             }
-           sleep(2);
+            sleep(2);
         }
     }
-
-
 }

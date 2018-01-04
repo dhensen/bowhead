@@ -13,7 +13,8 @@ use Illuminate\Console\Command;
 use DateInterval;
 use DateTime;
 
-class GetHistoricalCommand extends Command {
+class GetHistoricalCommand extends Command
+{
     /**
      * @var string
      */
@@ -40,7 +41,7 @@ class GetHistoricalCommand extends Command {
         $day1 = '2017-04-18';
         $diff1Day = new DateInterval('P1D');
         $day = new DateTime('2017-05-01 00:00:00');
-        while($day1 <= date('Y-m-d')) {
+        while ($day1 <= date('Y-m-d')) {
             $day1 = date("Y-m-d", $day->getTimestamp());
             $day->add($diff1Day);
             $date_list[$day1] = date("Y-m-d", $day->getTimestamp());
@@ -76,6 +77,5 @@ class GetHistoricalCommand extends Command {
                 }
             }
         }
-
     }
 }

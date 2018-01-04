@@ -12,13 +12,13 @@ use Bowhead\Models;
 
 trait Config
 {
-    public function bowhead_config($val) {
+    public function bowhead_config($val)
+    {
         try {
             $ret = Models\bh_configs::where('item', '=', $val)->first();
             return $ret->value;
         } catch (\Exception $e) {
             return false;
         }
-
     }
 }

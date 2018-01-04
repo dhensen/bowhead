@@ -7,6 +7,7 @@
  */
 
 namespace Bowhead\Strategy;
+
 use Bowhead\Util;
 
 /**
@@ -49,7 +50,7 @@ class whaleclubStrategy
      *
      * @param $instrument
      */
-    function __construct($instrument)
+    public function __construct($instrument)
     {
         $this->ledger = new Util\CoinBase;
         $this->instrument = $instrument;

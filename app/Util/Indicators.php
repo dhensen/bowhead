@@ -107,7 +107,7 @@ class Indicators
         $current = array_pop($data2['close']); #[count($data['close']) - 1];    // we assume this is current
         $prev_close = array_pop($data2['close']); #[count($data['close']) - 2]; // prior close
 
-        $atr = trader_atr ($data['high'], $data['low'], $data['close'], $period);
+        $atr = trader_atr($data['high'], $data['low'], $data['close'], $period);
         $atr = array_pop($atr) ; #[count($atr)-1]; // pick off the last
 
         # An upside breakout occurs when the price goes 1 ATR above the previous close
@@ -118,7 +118,7 @@ class Indicators
 
         if ($upside_signal > 0) {
             return 1; // buy
-        } elseif ($downside_signal > 0){
+        } elseif ($downside_signal > 0) {
             return -1; // sell
         }
         return 0;
@@ -218,16 +218,16 @@ class Indicators
         $hist     = $macd[2];
 
         //If not enough Elements for the Function to complete
-        if(!$macd || !$macd_raw){
-        	return 0;
-		}
+        if (!$macd || !$macd_raw) {
+            return 0;
+        }
 
         #$macd = $macd_raw[count($macd_raw)-1] - $signal[count($signal)-1];
         $macd = (array_pop($macd_raw) - array_pop($signal));
         # Close position for the pair when the MACD signal is negative
         if ($macd < 0) {
             return -1;
-        # Enter the position for the pair when the MACD signal is positive
+            # Enter the position for the pair when the MACD signal is positive
         } elseif ($macd > 0) {
             return 1;
         } else {
@@ -310,13 +310,13 @@ class Indicators
         #$current = array_pop($data2['close']); #$data['close'][count($data['close']) - 1];    // we assume this is current
         #$prev_close = array_pop($data2['close']); #$data['close'][count($data['close']) - 2]; // prior close
 
-        $rsi = trader_rsi ($data['close'], $period);
+        $rsi = trader_rsi($data['close'], $period);
         $rsi = array_pop($rsi);
 
         # RSI is above 70 and we own, sell
         if ($rsi > $HIGH_RSI) {
             return -1;
-        # RSI is below 30, buy
+            # RSI is below 30, buy
         } elseif ($rsi < $LOW_RSI) {
             return 1;
         } else {
@@ -366,9 +366,9 @@ class Indicators
         # 'oversold,' a long position is opened
         if ($slowk < 10 || $slowd < 10) {
             return 1;
-        # If either the slowk or slowd are larger than 90, the pair is
+            # If either the slowk or slowd are larger than 90, the pair is
         # 'overbought' and the position is closed.
-        }elseif ($slowk > 90 || $slowd > 90) {
+        } elseif ($slowk > 90 || $slowd > 90) {
             return -1;
         } else {
             return 0;
@@ -410,7 +410,7 @@ class Indicators
             return 1;
             # If either the slowk or slowd are larger than 90, the pair is
             # 'overbought' and the position is closed.
-        }elseif ($fastk > 90 || $fastd > 90) {
+        } elseif ($fastk > 90 || $fastd > 90) {
             return -1;
         } else {
             return 0;
@@ -442,7 +442,7 @@ class Indicators
             $data = $this->getRecentData($pair);
         }
         $data['mid'] = [];
-        foreach($data['high'] as $high_key => $high_alue) {
+        foreach ($data['high'] as $high_key => $high_alue) {
             $data['mid'][$high_key] = (($data['high'][$high_key] + $data['low'][$high_key])/2);
         }
         $ao_sma_1 = trader_sma($data['mid'], 5);
@@ -461,8 +461,8 @@ class Indicators
             /** Bullish cross */
             if ($ao_prior <= 0 && $ao_now > 0) {
                 return 100;
-            /** Bearish cross */
-            } elseif($ao_prior >= 0 && $ao_now < 0){
+                /** Bearish cross */
+            } elseif ($ao_prior >= 0 && $ao_now < 0) {
                 return -100;
             } else {
                 return 0;
@@ -627,7 +627,7 @@ class Indicators
         $prev_close = (float) array_pop($data['close']);
 
         $below        = $this->compareFloatNumbers($current_sar, $last_low, '<');
-        $above        = $this->compareFloatNumbers($current_sar, $last_high,'>');
+        $above        = $this->compareFloatNumbers($current_sar, $last_high, '>');
         $red_candle   = $this->compareFloatNumbers($last_open, $last_close, '<');
         $green_candle = $this->compareFloatNumbers($last_open, $last_close, '>');
 
@@ -816,22 +816,22 @@ class Indicators
         if ($trend) {
             $trending = 0;
             $parts = [];
-            for($a=0; $a<$trend_period; $a++) {
+            for ($a=0; $a<$trend_period; $a++) {
                 $parts[] = array_pop($stochrsi_trend);
             }
             foreach ($parts as $part) {
                 $trending += ($part >= 0.5 ? 1 : -1);
             }
-            if ($trending == 5){
+            if ($trending == 5) {
                 return 1;
             }
-            if ($trending == -5){
+            if ($trending == -5) {
                 return -1;
             }
             return 0;
-        /**
-         *  or, just see if we have overbought/oversold
-         */
+            /**
+             *  or, just see if we have overbought/oversold
+             */
         } else {
             if ($stochrsi < 0.2) {
                 return 1; // oversold
@@ -911,9 +911,9 @@ class Indicators
         }
         $ultosc = trader_ultosc($data['high'], $data['low'], $data['close'], $period1, $period2, $period3);
         //TODO verify if bug or not, it returned 0 with few data
-        if(!$ultosc){
-        	return 0;
-		}
+        if (!$ultosc) {
+            return 0;
+        }
         $ultosc = array_pop($ultosc);
         if ($ultosc <= 30) {
             return 1; // oversold
@@ -944,16 +944,16 @@ class Indicators
         }
         $rhp = [];
         $total = count($data['high']);
-        for($a=0; $a<$total; $a++) {
+        for ($a=0; $a<$total; $a++) {
             $slices_high = array_slice($data['high'], $a, $period);
             $slices_low  = array_slice($data['low'], $a, $period);
             $high = $total_highs = 0;
-            foreach($slices_high as $slice) {
+            foreach ($slices_high as $slice) {
                 $total_highs += ($slice > $high ? 1 : 0); // incr if new high
                 $high = ($slice > $high ? $slice : $high); // set new high?
             }
             $low = $total_lows = 0;
-            foreach($slices_low as $slice) {
+            foreach ($slices_low as $slice) {
                 $total_lows += ($slice < $low ? 1 : 0); // incr if new low
                 $low = ($slice < $low ? $slice : $low); // set new low
             }
@@ -995,10 +995,10 @@ class Indicators
         $signal   = $macd[1];
         #$hist     = $macd[2];
 
-		//Not enough Data
-		if(!$macd_raw || !$signal){
-			return 0;
-		}
+        //Not enough Data
+        if (!$macd_raw || !$signal) {
+            return 0;
+        }
 
         $macd_current  = (array_pop($macd_raw) - array_pop($signal));
 
@@ -1009,13 +1009,11 @@ class Indicators
 
         if ($bull_current > 0 && $highs_current > $macd_current) {
             return 1;
-        } elseif($bear_current < 0 && $lows_current < $macd_current) {
+        } elseif ($bear_current < 0 && $lows_current < $macd_current) {
             return -1;
         } else {
             return 0;
         }
-
-
     }
 
     /**
@@ -1030,13 +1028,13 @@ class Indicators
     public function mmi($pair='BTC/USD', $data=null, $period=200)
     {
         $data_close = [];
-        foreach($data['close'] as $point) {
+        foreach ($data['close'] as $point) {
             $data_close[] = $point;
         }
         $nl = $nh = 0;
         $len = count($data_close);
         $median = (array_sum($data_close)/$len);
-        for($a=0;$a<$len;$a++){
+        for ($a=0;$a<$len;$a++) {
             if ($data_close[$a] > $median && $data_close[$a] > @$data_close[$a-1]) {
                 $nl++;
             } elseif ($data_close[$a] < $median && $data_close[$a] < @$data_close[$a-1]) {
@@ -1073,7 +1071,7 @@ class Indicators
         if (empty($data)) {
             $data = $this->getRecentData($pair);
         }
-        $hts = trader_ht_sine($data['open'],$data['close']);
+        $hts = trader_ht_sine($data['open'], $data['close']);
         $dcsine     = array_pop($hts[1]);
         $p_dcsine   = array_pop($hts[1]);
         // leadsine is the first one it looks like.
@@ -1093,10 +1091,10 @@ class Indicators
         }
 
         /** WE ARE NOT ASKING FOR THE TREND, RETURN A SIGNAL */
-        if ($leadsine > $dcsine && $p_leadsine <= $p_dcsine){
+        if ($leadsine > $dcsine && $p_leadsine <= $p_dcsine) {
             return 1; // buy
         }
-        if ($leadsine < $dcsine && $p_leadsine >= $p_dcsine){
+        if ($leadsine < $dcsine && $p_leadsine >= $p_dcsine) {
             return -1; // sell
         }
         return 0;
@@ -1124,7 +1122,7 @@ class Indicators
         $htl  = trader_ht_trendline($data['close']);
         $wma4 = trader_wma($data['close'], 4);
 
-        for($a=0;$a<5;$a++) {
+        for ($a=0;$a<5;$a++) {
             $a_htl[$a]  = array_pop($htl);
             $a_wma4[$a] = array_pop($wma4);
             $uptrend   += ($a_wma4[$a] > $a_htl[$a] ? 1 : 0);
@@ -1162,7 +1160,7 @@ class Indicators
         if ($numperiods) {
             $nump = 1;
             $test = $htm;
-            for($b=0;$b<count($a_htm);$b++) {
+            for ($b=0;$b<count($a_htm);$b++) {
                 $test = array_pop($a_htm);
                 if ($test == $htm) {
                     $nump++;
@@ -1235,12 +1233,12 @@ class Indicators
 
         $mas = ['sma','ema','wma','dema','trima','kama','mama']; // 't3','tema']' not working?
         foreach ($mas as $ma) {
-            foreach ($mas as $ma2){
-                foreach ($mas as $ma3){
+            foreach ($mas as $ma2) {
+                foreach ($mas as $ma3) {
                     $key = $ma.$ma2.$ma3;
-                    if ($ma == $ma2){
+                    if ($ma == $ma2) {
                         $key = $ma.$ma2;
-                        if ($ma2 == $ma3){
+                        if ($ma2 == $ma3) {
                             $key = $ma;
                         }
                     }
@@ -1273,7 +1271,8 @@ class Indicators
      *      slower than built-in functions as it has to call out to python passing data through
      *      redis.
      */
-    public function prediction($which='close', $pair='BTC/USD', $start=null, $end=null) {
+    public function prediction($which='close', $pair='BTC/USD', $start=null, $end=null)
+    {
         $a = \DB::table('historical')
             ->select('*')
             ->where('pair', $pair)
@@ -1282,13 +1281,13 @@ class Indicators
             ->get();
 
         $csv = "seq,id,curr,close,open,volume,zero\n";
-        foreach($a as $stuff) {
+        foreach ($a as $stuff) {
             $_csv[] = "'".$stuff->buckettime ."',". $stuff->id .",'". $stuff->pair . "'," . (float)$stuff->close .','.(float)$stuff->open.','.(float)$stuff->volume.",0\n";
         }
         $__csv = array_reverse($_csv);
-        $ccsv = join ("", $__csv);
+        $ccsv = join("", $__csv);
         $csv .= trim($ccsv);
-        \Cache::put('tempbook',$csv,5); // we use redis to pass this to python
+        \Cache::put('tempbook', $csv, 5); // we use redis to pass this to python
 
         echo array_pop($__csv) . "\n";
         $doing = base_path() . "/app/Scripts/$which"."_prediction.py";
@@ -1299,7 +1298,7 @@ class Indicators
             throw new ProcessFailedException($process);
         }
         $out = explode(',', $process->getOutput());
-        return round(array_pop($out),2);
+        return round(array_pop($out), 2);
     }
 
     // a function for comparing two float numbers
@@ -1314,8 +1313,7 @@ class Indicators
         $float1 = (float)$float1;
         $float2 = (float)$float2;
 
-        switch ($operator)
-        {
+        switch ($operator) {
             // equal
             case "=":
             case "eq":
@@ -1331,9 +1329,7 @@ class Indicators
             {
                 if (abs($float1 - $float2) < $epsilon) {
                     return false;
-                }
-                else
-                {
+                } else {
                     if ($float1 < $float2) {
                         return true;
                     }
@@ -1355,9 +1351,7 @@ class Indicators
             {
                 if (abs($float1 - $float2) < $epsilon) {
                     return false;
-                }
-                else
-                {
+                } else {
                     if ($float1 > $float2) {
                         return true;
                     }

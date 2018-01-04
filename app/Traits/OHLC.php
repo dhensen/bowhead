@@ -120,7 +120,6 @@ trait OHLC
             `close`  = VALUES(`close`)
         ");
             }
-
         }
 
         /** 5m table update  **/
@@ -406,7 +405,7 @@ trait OHLC
             $ret['close'][]  = $data->close;
             $ret['volume'][] = $data->volume;
         }
-        foreach($ret as $key => $rettemmp) {
+        foreach ($ret as $key => $rettemmp) {
             $ret[$key] = array_reverse($rettemmp);
         }
         return $ret;
@@ -429,7 +428,7 @@ trait OHLC
          *  doing identical pulls for signals.
          */
         $key = 'recent::'.$pair.'::'.$limit."::$day_data::$hour::$periodSize";
-        if(\Cache::has($key)) {
+        if (\Cache::has($key)) {
             return \Cache::get($key);
         }
 
@@ -446,40 +445,40 @@ trait OHLC
             $ret = $this->organizePairData($a);
         }
 
-	$ptime = null;
-	$validperiods = 0;
-	foreach ($a as $ab) {
-	   #echo print_r($ab,1);
-	   $array = (array) $ab;
-	   $ftime = $array['buckettime'];
-	   if ($ptime == null) {
-	      $ptime = $ftime;
-		  echo "Starting at $array[ctime]...\n";
-	   } else {
-	 	/** Check for missing periods **/
-		if ($periodSize == '1m') {
-		   $variance = (int)80;
-		} else if ($periodSize == '5m') {
-		   $variance = (int)375;
-		} else if ($periodSize == '15m') {
-		   $variance = (int)1125;
-		} else if ($periodSize == '30m') {
-		   $variance = (int)2250;
-		} else if ($periodSize == '1h') {
-		   $variance = (int)4500;
-		} else if ($periodSize == '1d') {
-		   $variance = (int)108000;
-		}
-		#echo 'Past Time is '.$ptime.' and current time is '.$ftime."\n";
-		$periodcheck = $ptime - $ftime;
-		if ((int)$periodcheck > (int)$variance) {
-			echo 'YOU HAVE '.$validperiods.' PERIODS OF VALID PRICE DATA OUT OF '.$limit.'. Please ensure price sync is running and wait for additional data to be logged before trying again. Additionally you could use a smaller time period if available.'."\n";
-			die();
-		}	
-		$validperiods++;
-	   }
-	   $ptime = $ftime;	
-	}
+        $ptime = null;
+        $validperiods = 0;
+        foreach ($a as $ab) {
+            #echo print_r($ab,1);
+            $array = (array) $ab;
+            $ftime = $array['buckettime'];
+            if ($ptime == null) {
+                $ptime = $ftime;
+                echo "Starting at $array[ctime]...\n";
+            } else {
+                /** Check for missing periods **/
+                if ($periodSize == '1m') {
+                    $variance = (int)80;
+                } elseif ($periodSize == '5m') {
+                    $variance = (int)375;
+                } elseif ($periodSize == '15m') {
+                    $variance = (int)1125;
+                } elseif ($periodSize == '30m') {
+                    $variance = (int)2250;
+                } elseif ($periodSize == '1h') {
+                    $variance = (int)4500;
+                } elseif ($periodSize == '1d') {
+                    $variance = (int)108000;
+                }
+                #echo 'Past Time is '.$ptime.' and current time is '.$ftime."\n";
+                $periodcheck = $ptime - $ftime;
+                if ((int)$periodcheck > (int)$variance) {
+                    echo 'YOU HAVE '.$validperiods.' PERIODS OF VALID PRICE DATA OUT OF '.$limit.'. Please ensure price sync is running and wait for additional data to be logged before trying again. Additionally you could use a smaller time period if available.'."\n";
+                    die();
+                }
+                $validperiods++;
+            }
+            $ptime = $ftime;
+        }
 
         \Cache::put($key, $ret, 2);
         return $ret;

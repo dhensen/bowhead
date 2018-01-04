@@ -61,7 +61,7 @@ class Whaleclub
      *
      * @param $instrument
      */
-    function __construct($instrument='BTC/USD')
+    public function __construct($instrument='BTC/USD')
     {
         $this->token = env('WHALECLUB_TOKEN');
         $this->instrument = $instrument;
@@ -71,15 +71,15 @@ class Whaleclub
     {
         $headers = array();
         $header_text = substr($response, 0, strpos($response, "\r\n\r\n"));
-        foreach (explode("\r\n", $header_text) as $i => $line)
-            if ($i === 0)
+        foreach (explode("\r\n", $header_text) as $i => $line) {
+            if ($i === 0) {
                 $headers['http_code'] = $line;
-            else
-            {
-                list ($key, $value) = explode(': ', $line);
+            } else {
+                list($key, $value) = explode(': ', $line);
 
                 $headers[$key] = $value;
             }
+        }
         return $headers;
     }
 
@@ -127,7 +127,7 @@ class Whaleclub
         #$xrate_limit  = $headers['X-RateLimit-Limit']     ?? '';
         #$xrate_remain = $headers['X-RateLimit-Remaining'] ?? '';
         #$xrate_reset  = $headers['X-RateLimit-Reset']     ?? '';
-        $body = json_decode($body,1);
+        $body = json_decode($body, 1);
         curl_close($curl);
 
         if ($err || $http_code != 200) {
@@ -137,10 +137,10 @@ class Whaleclub
                 'response' => ($responses[$http_code] ?? 'Unknown:'. $http_code),
                 'body'     => $body
             ];
-            return $json ? json_encode($ret,1) : $ret;
+            return $json ? json_encode($ret, 1) : $ret;
         } else {
             $body['err'] = 0;
-            return $json ? json_encode($body,1) : $body;
+            return $json ? json_encode($body, 1) : $body;
         }
     }
 

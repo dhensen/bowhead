@@ -7,8 +7,6 @@ use Illuminate\Http\Request;
 use Dingo\Api\Routing\Helpers;
 use Illuminate\Routing\Controller;
 
-
-
 /**
  * Class Accounts
  * @package Bowhead\Http\Controllers
@@ -43,7 +41,7 @@ class Accounts extends Controller
         }
     }
 
-    function __debugInfo()
+    public function __debugInfo()
     {
         // TODO: Implement __debugInfo() method.
     }
@@ -79,19 +77,15 @@ class Accounts extends Controller
      */
     public function posttAccountAction()
     {
-
     }
 
     /** modify orders */
     public function patchAccountAction()
     {
-
     }
 
     /** close positions */
     public function deleteAccountAction()
     {
-
     }
-
 }

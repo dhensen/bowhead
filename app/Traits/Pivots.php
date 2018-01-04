@@ -17,7 +17,7 @@ use Bowhead\Traits\OHLC;
  */
 trait Pivots
 {
-    function calcFibonacci($data, $period=15)
+    public function calcFibonacci($data, $period=15)
     {
         if (empty($data)) {
             $data = $this->getRecentData('BTC/USD');
@@ -36,7 +36,7 @@ trait Pivots
         $data['close'] = array_values($data['close']);
         $num = count($data['high'])-(round($period/2)*2);
         $ret = [];
-        for($a=$num; $a<count($data['high']); $a++) {
+        for ($a=$num; $a<count($data['high']); $a++) {
             $p = ($data['high'][$a] + $data['low'][$a] + $data['close'][$a])/3;
             $s1 = $p - (.382 * ($data['high'][$a] - $data['low'][$a]));
             $s2 = $p - (.618 * ($data['high'][$a] - $data['low'][$a]));
@@ -57,7 +57,7 @@ trait Pivots
         return $ret;
     }
 
-    function calcDemark($data, $period=120)
+    public function calcDemark($data, $period=120)
     {
         if (empty($data)) {
             $data = $this->getRecentData('BTC/USD');
@@ -76,14 +76,14 @@ trait Pivots
         $data['close'] = array_values($data['close']);
         $num = count($data['high'])-(round($period/2)*2);
         $ret = [];
-        for($a=$num; $a<count($data['high']); $a++) {
-            if ($data['close'][$a] < $data['open'][$a]){
+        for ($a=$num; $a<count($data['high']); $a++) {
+            if ($data['close'][$a] < $data['open'][$a]) {
                 $x = ($data['high'][$a] + ($data['low'][$a] * 2) + $data['close'][$a]);
             }
-            if ($data['close'][$a] > $data['open'][$a]){
+            if ($data['close'][$a] > $data['open'][$a]) {
                 $x = (($data['high'][$a] * 2) + $data['low'][$a] + $data['close'][$a]);
             }
-            if ($data['close'][$a] > $data['open'][$a]){
+            if ($data['close'][$a] > $data['open'][$a]) {
                 $x = ($data['high'][$a] + $data['low'][$a] + ($data['close'][$a] * 2));
             }
             $p = $x/4;
@@ -97,7 +97,7 @@ trait Pivots
         return $ret;
     }
 
-    function calcPivot($data, $period=120)
+    public function calcPivot($data, $period=120)
     {
         if (empty($data)) {
             $data = $this->getRecentData('BTC/USD');
@@ -114,7 +114,7 @@ trait Pivots
         $data['close'] = array_values($data['close']);
         $num = count($data['high'])-(round($period/2)*2);
         $ret = [];
-        for($a=$num; $a<count($data['high']); $a++) {
+        for ($a=$num; $a<count($data['high']); $a++) {
             $p = ($data['high'][$a] + $data['low'][$a] + $data['close'][$a])/3;
             $s1 = ($p * 2) - $data['high'][$a];
             $s2 = ($p - ($data['high'][$a] - $data['low'][$a]));

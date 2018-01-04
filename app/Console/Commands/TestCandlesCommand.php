@@ -52,18 +52,18 @@ class TestCandlesCommand extends Command
     {
         $console = new Console();
         $ind = new Indicators();
-        $data = $this->getRecentData('AUD_USD',150);
+        $data = $this->getRecentData('AUD_USD', 150);
         $instruments = ['USD_JPY','NZD_USD','EUR_GBP','USD_CAD','USD_CNH','USD_MXN','USD_TRY','AUD_USD','EUR_USD','USD_CHF'];
 
-        while(1) {
+        while (1) {
             $all = [];
-            foreach($instruments as $instrument) {
-                $data = $this->getRecentData($instrument,200);
+            foreach ($instruments as $instrument) {
+                $data = $this->getRecentData($instrument, 200);
                 $cand = $this->candles->allCandles($instrument, $data);
                 $candles[$instrument] = $cand['current'] ?? [];
                 $all = array_merge($all, $cand['current'] ?? []);
             }
-            foreach($instruments as $instrument) {
+            foreach ($instruments as $instrument) {
                 foreach ($all as $allof => $val) {
                     $candles[$instrument][$allof] = $candles[$instrument][$allof] ?? 0;
                 }

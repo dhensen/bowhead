@@ -159,7 +159,7 @@ trait Strategies
         $fsar   = $indicators->fsar($pair, $data); // custom sar for forex
         $stoch  = $indicators->stoch($pair, $data);
         $stochf = $indicators->stochf($pair, $data);
-        $stochs = (($stoch == -1 || $stochf == -1) ? -1 : ( ($stoch == 1 || $stochf == 1) ? 1 : 0) );
+        $stochs = (($stoch == -1 || $stochf == -1) ? -1 : (($stoch == 1 || $stochf == 1) ? 1 : 0));
         if ($fsar == -1 && ($stoch == -1 || $stochf == -1)) {
             $return['side']     = 'short';
             $return['strategy'] = 'sar_stoch';
@@ -416,12 +416,12 @@ trait Strategies
         }
         $green_avg = (array_sum($green)/count($green));
 
-        if ($red_avg < $green_avg && $redp_avg > $green_avg){
+        if ($red_avg < $green_avg && $redp_avg > $green_avg) {
             $return['side']     = 'long';
             $return['strategy'] = 'ema_scalper';
             return ($return_full ? $return : 1);
         }
-        if ($red_avg > $green_avg && $redp_avg < $green_avg){
+        if ($red_avg > $green_avg && $redp_avg < $green_avg) {
             $return['side']     = 'short';
             $return['strategy'] = 'ema_scalper';
             return ($return_full ? $return : -1);
@@ -467,7 +467,7 @@ trait Strategies
             $pointed_down = true;
         }
 
-        $rsi = trader_rsi ($data['close'], 14);
+        $rsi = trader_rsi($data['close'], 14);
         $rsi = array_pop($rsi);
 
         if ($ema5 >= $ema10 && $ema5p < $ema10 && $rsi > 50 && $pointed_up) {
@@ -492,7 +492,7 @@ trait Strategies
      */
     public function bowhead_double_volatility($pair, $data, $return_full=false)
     {
-        $rsi = trader_rsi ($data['close'], 11);
+        $rsi = trader_rsi($data['close'], 11);
         $rsi = array_pop($rsi);
 
         $sma20_high = $this->sma_maker($data['high'], 20);
@@ -564,7 +564,7 @@ trait Strategies
         $ma150 = $this->ma_maker($data['close'], 150);
         $ma365 = $this->ma_maker($data['close'], 365);
 
-        if (   $ma6 > $ma150
+        if ($ma6 > $ma150
             && $ma6 > $ma365
             && $ma35 > $ma150
             && $ma35 > $ma365
@@ -576,7 +576,7 @@ trait Strategies
             $return['strategy'] = 'base_150';
             return ($return_full ? $return : 1);
         }
-        if (   $ma6 < $ma150
+        if ($ma6 < $ma150
             && $ma6 < $ma365
             && $ma35 < $ma150
             && $ma35 < $ma365
@@ -662,12 +662,12 @@ trait Strategies
         $cci    = trader_cci($data['high'], $data['low'], $data['close'], 30);
         $cci    = array_pop($cci);
 
-        if($ema8 > $ema28 && $ema8p < $ema28 && $cci > 0){
+        if ($ema8 > $ema28 && $ema8p < $ema28 && $cci > 0) {
             $return['side']     = 'long';
             $return['strategy'] = 'cci_ema';
             return ($return_full ? $return : 1);
         }
-        if ($ema8 < $ema28 && $ema8p > $ema28 && $cci < 0){
+        if ($ema8 < $ema28 && $ema8p > $ema28 && $cci < 0) {
             $return['side']     = 'short';
             $return['strategy'] = 'cci_ema';
             return ($return_full ? $return : -1);
@@ -722,12 +722,12 @@ trait Strategies
 
         $macd = $indicators->macd($pair, $data, 5, 10, 4);
 
-        if ($ema4 < $ema10 && $ema4p > $ema10 && $macd < 0){
+        if ($ema4 < $ema10 && $ema4p > $ema10 && $macd < 0) {
             $return['side']     = 'long';
             $return['strategy'] = 'ema_adx_macd';
             return ($return_full ? $return : 1);
         }
-        if ($ema4 > $ema10 && $ema4p < $ema10 && $macd > 0){
+        if ($ema4 > $ema10 && $ema4p < $ema10 && $macd > 0) {
             $return['side']     = 'short';
             $return['strategy'] = 'ema_adx_macd';
             return ($return_full ? $return : -1);
@@ -818,7 +818,7 @@ trait Strategies
         $slowk = array_pop($slowk);
         $slowd = array_pop($slowd);
 
-        $rsi = trader_rsi ($data['close'], 3);
+        $rsi = trader_rsi($data['close'], 3);
         $rsi = array_pop($rsi);
 
         if ($price > $sma150 && $rsi < 20 && $slowk > 70 && $slowk > $slowd) {
@@ -932,11 +932,11 @@ trait Strategies
         $high  = array_pop($data['high']);
         $low   = array_pop($data['low']);
 
-        if ($high >= $upper1 && ($price <= $middle1 || $low <= $middle1)){
+        if ($high >= $upper1 && ($price <= $middle1 || $low <= $middle1)) {
             $return['side'] = 'long';
             $return['strategy'] = 'trend_bounce';
             return ($return_full ? $return : 1);
-        } elseif ($high >= $upper1 && ($price <= $middle1 || $low <= $middle1)){
+        } elseif ($high >= $upper1 && ($price <= $middle1 || $low <= $middle1)) {
             $return['side'] = 'short';
             $return['strategy'] = 'trend_bounce';
             return ($return_full ? $return : -11);
@@ -986,7 +986,6 @@ trait Strategies
         } else {
             return 0;
         }
-
     }
 
     /**
@@ -1027,7 +1026,7 @@ trait Strategies
             $return['side'] = 'long';
             $return['strategy'] = 'powerranger';
             return 1;
-        }elseif ($slowka < 80 && $slowkp > 80 || $slowda < 80 && $slowdp > 80) {
+        } elseif ($slowka < 80 && $slowkp > 80 || $slowda < 80 && $slowdp > 80) {
             $return['side'] = 'short';
             $return['strategy'] = 'powerranger';
             return -1;
@@ -1054,8 +1053,8 @@ trait Strategies
     public function bowhead_famamama($pair, $data, $return_full=false)
     {
         // trader_mama ( array $real [, float $fastLimit [, float $slowLimit ]] )
-        $mama = trader_mama ($data['close'], 0.5, 0.05);
-        $fama = trader_mama ($data['close'], 0.25, 0.025);
+        $mama = trader_mama($data['close'], 0.5, 0.05);
+        $fama = trader_mama($data['close'], 0.25, 0.025);
 
         $mama_current = array_pop($mama);
         $fama_current = array_pop($fama);
@@ -1065,7 +1064,7 @@ trait Strategies
             $return['side'] = 'long';
             $return['strategy'] = 'famamama';
             return 1;
-        } elseif($fama_current < $mama_current && $fama_prior > $mama_current) {
+        } elseif ($fama_current < $mama_current && $fama_prior > $mama_current) {
             $return['side'] = 'short';
             $return['strategy'] = 'famamama';
             return -1;
@@ -1073,6 +1072,4 @@ trait Strategies
             return 0;
         }
     }
-
-
 }

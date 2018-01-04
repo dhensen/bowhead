@@ -73,12 +73,12 @@ trait Signals
 
         if ($compile) {
             $return = $ret = [];
-            foreach($symbollines as $symbol => $datas) {
+            foreach ($symbollines as $symbol => $datas) {
                 $ret[$symbol] = [];
                 $ret[$symbol]['buy']  = 0;
                 $ret[$symbol]['sell'] = 0;
 
-                foreach($datas as $data) {
+                foreach ($datas as $data) {
                     $ret[$symbol]['buy']  += ($data == 1 ? 1 : 0);
                     $ret[$symbol]['sell'] += ($data == -1 ? 1 : 0);
                 }
@@ -105,10 +105,10 @@ trait Signals
         $lines = [];
         $lines['top'] = '';
         $output = '';
-        foreach($instruments as $instrument) {
+        foreach ($instruments as $instrument) {
             $lines['top'] .= str_pad($instrument, 10);
-            foreach($inds as $ind) {
-                if(!isset($lines[$ind])){
+            foreach ($inds as $ind) {
+                if (!isset($lines[$ind])) {
                     $lines[$ind] = '';
                 }
                 $color = ($symbollines[$instrument][$ind] > 0 ? 'bg_green' : ($symbollines[$instrument][$ind] < 0 ? 'bg_red' : 'bg_black'));
@@ -116,7 +116,7 @@ trait Signals
             }
         }
         echo "\n".@$lines['top'];
-        foreach($inds as $ind) {
+        foreach ($inds as $ind) {
             echo "\n".$lines[$ind];
         }
         echo "\n\n";

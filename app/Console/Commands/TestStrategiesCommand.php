@@ -20,8 +20,8 @@ use Symfony\Component\Console\Input\InputArgument;
  *          CONDITIONS FOR A TEST.
  *
  */
-class TestStrategiesCommand extends Command {
-
+class TestStrategiesCommand extends Command
+{
     use Signals, Strategies, OHLC; // add our traits
 
     /**
@@ -46,9 +46,15 @@ class TestStrategiesCommand extends Command {
      */
     public function doColor($val)
     {
-        if ($val == 0){ return 'none'; }
-        if ($val == 1){ return 'green'; }
-        if ($val == -1){ return 'magenta'; }
+        if ($val == 0) {
+            return 'none';
+        }
+        if ($val == 1) {
+            return 'green';
+        }
+        if ($val == -1) {
+            return 'magenta';
+        }
         return 'none';
     }
 
@@ -81,7 +87,8 @@ class TestStrategiesCommand extends Command {
     public function updateDb()
     {
         $wc = new Util\Whaleclub();
-        $ids = \DB::table('bowhead_strategy')->select(DB::raw('unix_timestamp(ctime) AS stime, position_id, pair'))->whereNull('profit')->get();;
+        $ids = \DB::table('bowhead_strategy')->select(DB::raw('unix_timestamp(ctime) AS stime, position_id, pair'))->whereNull('profit')->get();
+        ;
         if (!empty($ids)) {
             foreach ($ids as $id) {
                 $modify = 301;
@@ -132,7 +139,7 @@ class TestStrategiesCommand extends Command {
         }
 
         $wc = new Util\Whaleclub();
-        $price = $wc->getPrice(str_replace('_','-',$instrument));
+        $price = $wc->getPrice(str_replace('_', '-', $instrument));
         $price = $price['price'];
 
         /**
@@ -146,15 +153,15 @@ class TestStrategiesCommand extends Command {
          *  30% of price with 200 leverage = ((30/200)/100) = 0.15%
          *
          */
-        $tp = round(( $price * (20/$lev) ) / 100, 5);
-        $sl = round(( $price * (10/$lev) ) / 100, 5);
+        $tp = round(($price * (20/$lev)) / 100, 5);
+        $sl = round(($price * (10/$lev)) / 100, 5);
         $amt_takeprofit = ($direction == 'long' ? ((float)$price + $tp) : ((float)$price - $tp));
         $amt_stoploss   = ($direction == 'long' ? ((float)$price - $sl) : ((float)$price + $sl));
 
         $order = [
              'direction'   => $direction
             ,'leverage'    => $lev
-            ,'market'      => str_replace('_','-',$instrument)
+            ,'market'      => str_replace('_', '-', $instrument)
             ,'take_profit' => $amt_takeprofit
             ,'stop_loss'   => $amt_stoploss
             ,'entry_price' => $entry ?? null
@@ -163,7 +170,7 @@ class TestStrategiesCommand extends Command {
         $info =  $wc->positionNew($order);
         print_r($info);
         $err = $info['error']['code'] ?? null;
-        if (isset($info['error']) && is_array($info['error'])){
+        if (isset($info['error']) && is_array($info['error'])) {
             return ['error' => $err];
         }
         $insert['position_id'] = $info['id'];
@@ -198,8 +205,8 @@ class TestStrategiesCommand extends Command {
         stream_set_blocking(STDIN, 0);
 
         $console     = new \Bowhead\Util\Console();
-		
-		$instruments = ['USD_JPY','NZD_USD','EUR_GBP','USD_CAD','USD_CNH','USD_MXN','USD_TRY','AUD_USD','EUR_USD','USD_CHF'];
+        
+        $instruments = ['USD_JPY','NZD_USD','EUR_GBP','USD_CAD','USD_CNH','USD_MXN','USD_TRY','AUD_USD','EUR_USD','USD_CHF'];
         $leverages   = [222,200,100,88,50,25,1];
         /**
          *  $strategies = $this->strategies_all = every single strategy.
@@ -211,11 +218,11 @@ class TestStrategiesCommand extends Command {
          */
         $strategies = $this->strategies_1m;
 
-        foreach($strategies as $k => $strategy) {
-            $strategies[$k] = str_replace('bowhead_','',$strategy);
+        foreach ($strategies as $k => $strategy) {
+            $strategies[$k] = str_replace('bowhead_', '', $strategy);
         }
 
-        while(1) {
+        while (1) {
             if (ord(fgetc(STDIN)) == 113) { // try to catch keypress 'q'
                 echo "QUIT detected...";
                 return null;
@@ -232,7 +239,7 @@ class TestStrategiesCommand extends Command {
              *  using $this->${'strategy'}(param1, param2)
              *  $pair_strategies just has [pair][strategy] = {-1/1/0}
              */
-            foreach($instruments as $instrument) {
+            foreach ($instruments as $instrument) {
                 $recentData = $this->getRecentData($instrument, 220);
                 $recentData_copy = $recentData['close'];
                 $recentprices[$instrument] = array_pop($recentData_copy);
@@ -242,7 +249,7 @@ class TestStrategiesCommand extends Command {
                  *  Using $strategies_all from strategies trait
                  */
                 foreach ($strategies as $strategy) {
-                	$function_name = 'bowhead_' . $strategy;
+                    $function_name = 'bowhead_' . $strategy;
                     $flags[$strategy] = $this->$function_name($instrument, $recentData);
                 }
                 $pair_strategies[$instrument] = $flags;
@@ -279,7 +286,7 @@ class TestStrategiesCommand extends Command {
                 foreach ($pair_strategies as $pair => $strategies) {
                     $sigs = $this->compileSignals($signals[$pair], 1);
                     foreach ($strategies as $strategy => $flag) {
-                        if ($flag == 0){
+                        if ($flag == 0) {
                             continue; // not a short or a long
                         }
                         $direction  = ($pair_strategies[$pair][$strategy] > 0 ? 'long' : 'short');
@@ -334,6 +341,4 @@ class TestStrategiesCommand extends Command {
 
         return null;
     }
-
-
 }

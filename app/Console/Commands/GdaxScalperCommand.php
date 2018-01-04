@@ -112,18 +112,18 @@ class GdaxScalperCommand extends Command
         echo $this->console->colorize("PRESS ENTER TO CONTINUE\n");
         echo $this->console->colorize("------------------------------------------------------------------\n");
 
-        $handle = fopen ("php://stdin","r");
+        $handle = fopen("php://stdin", "r");
         $line = fgets($handle);
 
 
         echo $this->console->colorize("UPDATING RECENT Open, High, Low, Close data\n");
-        $_trades = $this->coinbase->get_endpoint('trades',null,null,'BTC-USD');
+        $_trades = $this->coinbase->get_endpoint('trades', null, null, 'BTC-USD');
         $totalsize = $trades = [];
         $total = count($_trades);
         $i = 1;
-        foreach($_trades as $tr) {
+        foreach ($_trades as $tr) {
             $dates = date_parse($tr['time']);
-            $timeid = $dates['year'].str_pad($dates['month'],2,0,STR_PAD_LEFT).str_pad($dates['day'],2,0,STR_PAD_LEFT).str_pad($dates['hour'],2,0,STR_PAD_LEFT).str_pad($dates['minute'],2,0,STR_PAD_LEFT);
+            $timeid = $dates['year'].str_pad($dates['month'], 2, 0, STR_PAD_LEFT).str_pad($dates['day'], 2, 0, STR_PAD_LEFT).str_pad($dates['hour'], 2, 0, STR_PAD_LEFT).str_pad($dates['minute'], 2, 0, STR_PAD_LEFT);
 
             $totalsize[$timeid] = $totalsize[$timeid] ?? 0; // init if not present
             $totalsize[$timeid] += $tr['size'] ?? 0;        // otherwise increment
@@ -149,8 +149,8 @@ class GdaxScalperCommand extends Command
         /**
          *  Our main loop
          */
-        while (1){
-            $_ticker = $this->coinbase->get_endpoint('ticker',null,null,'BTC-USD');
+        while (1) {
+            $_ticker = $this->coinbase->get_endpoint('ticker', null, null, 'BTC-USD');
             $_orders = [];
             if (count($this->orders) > 0) {
                 echo $this->console->colorize("\nCurrent orders:\n");
@@ -207,14 +207,14 @@ class GdaxScalperCommand extends Command
         echo $this->console->colorize("Updating...\n", 'reverse');
         $this->orders = $this->coinbase->listorders();
 
-        $this->book = $this->coinbase->get_endpoint('book',null,null,'BTC-USD');
+        $this->book = $this->coinbase->get_endpoint('book', null, null, 'BTC-USD');
         $this->bid = $this->book['bids'][0][0];
         $this->ask = $this->book['asks'][0][0];
         $this->bidsize = $this->book['bids'][0][1];
         $this->asksize = $this->book['asks'][0][1];
 
         $bals = $this->coinbase->get_balances();
-        foreach($bals as $key => $bal) {
+        foreach ($bals as $key => $bal) {
             $this->balances[$key] = $bal['available'];
         }
     }
@@ -226,5 +226,4 @@ class GdaxScalperCommand extends Command
     {
         return $this->coinbase->get_endpoint('book', null, '?level=2', $instrument);
     }
-
 }

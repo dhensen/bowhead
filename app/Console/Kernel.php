@@ -30,7 +30,7 @@ class Kernel extends ConsoleKernel
         Commands\TestTrendsCommand::class,
         Commands\RandomWalkCommand::class,
         Commands\FxStreamCommand::class,
-		Commands\KrakenStreamCommand::class,
+        Commands\KrakenStreamCommand::class,
     ];
 
     /**

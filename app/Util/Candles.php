@@ -44,7 +44,7 @@ class Candles
      *
      *      Here is all the candles
      */
-    public $candles = array (
+    public $candles = array(
         'trader_cdl2crows'              => 'Two Crows',
         'trader_cdl3blackcrows'         => 'Three Black Crows',
         'trader_cdl3inside'             => 'Three Inside Up/Down',
@@ -131,14 +131,14 @@ class Candles
         if (empty($data)) {
             $data = $this->getRecentData($pair);
         }
-        foreach($this->candles as $cdlfunc => $name) {
+        foreach ($this->candles as $cdlfunc => $name) {
             if (function_exists($cdlfunc)) {
                 $tempdata = $cdlfunc($data['open'], $data['high'], $data['low'], $data['close']);
                 if (empty($tempdata)) {
                     continue;
                 }
 
-                $cdlfunc = str_replace('trader_cdl','', $cdlfunc);
+                $cdlfunc = str_replace('trader_cdl', '', $cdlfunc);
 
                 $tmp = array_map('abs', $tempdata); // remove negatives
                 $sum = array_sum($tmp);             // sum it all
@@ -157,7 +157,7 @@ class Candles
                 $closeData = array_values($data['close']);
                 foreach ($tempdataReIndexed as $idx => $cand) {
                     $sindex = (($idx)-3 < 0 ? 3 : $idx);
-                    if ($sindex+4 > count($closeData)){
+                    if ($sindex+4 > count($closeData)) {
                         $sindex = $sindex - 4;
                     }
                     $currents = array_slice($closeData, $sindex-3, 7);
@@ -186,5 +186,4 @@ class Candles
 
         return $ret;
     }
-
 }

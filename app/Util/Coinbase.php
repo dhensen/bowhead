@@ -72,7 +72,7 @@ class Coinbase
      */
     protected $util;
 
-    function __construct()
+    public function __construct()
     {
         $this->key        = env('CBKEY');
         $this->secret     = env('CBSECRET');
@@ -89,7 +89,8 @@ class Coinbase
      * @return mixed
      * get both USD/BTC balances on coinbase
      */
-    public function get_balances() {
+    public function get_balances()
+    {
         $jsonReturn = $this->get_endpoint("accounts");
         #error_log(print_r($jsonReturn,1));
         foreach ($jsonReturn as $ret) {
@@ -168,10 +169,10 @@ class Coinbase
             'size' => $size,
             'time_in_force' => $time_in_force
         );
-        if(!empty($cancel_after)) {
+        if (!empty($cancel_after)) {
             $data['cancel_after'] = $cancel_after;
         }
-        if(!empty($post_only)) {
+        if (!empty($post_only)) {
             $data['post_only'] = $post_only;
         }
         return $this->place_order($data);
@@ -197,10 +198,10 @@ class Coinbase
             'size' => $size,
             'time_in_force' => $time_in_force
         );
-        if(!empty($cancel_after)) {
+        if (!empty($cancel_after)) {
             $data['cancel_after'] = $cancel_after;
         }
-        if(!empty($post_only)) {
+        if (!empty($post_only)) {
             $data['post_only'] = $post_only;
         }
         return $this->place_order($data);
@@ -260,7 +261,8 @@ class Coinbase
      *
      * @return array
      */
-    function cancel_all_orders($side=null) {
+    public function cancel_all_orders($side=null)
+    {
         $ret = array();
         $orders = $this->get_endpoint('orders');
         foreach ($orders as $order) {
@@ -286,7 +288,6 @@ class Coinbase
      */
     public function getorder()
     {
-
     }
 
     /**
@@ -295,40 +296,40 @@ class Coinbase
      *
      * https://docs.gdax.com/?php#orders
      */
-    public function place_order($data){
-
+    public function place_order($data)
+    {
         $data['type'] = (empty($data['type']) ? 'limit' : $data['type']); // limit, market, stop
         if (empty($data['side'])) {
             return "error missing side";
         }
-        if (!in_array($data['type'], array('limit','market','stop'))){
+        if (!in_array($data['type'], array('limit','market','stop'))) {
             return 'ERROR: type must be one of limit/market/stop';
         }
-        if (!in_array($data['side'], array('buy','sell'))){
+        if (!in_array($data['side'], array('buy','sell'))) {
             return 'ERROR: side must be one of buy/sell';
         }
 
         if (empty($data['time_in_force'])) {
             $data['time_in_force'] = 'GTC';
-        }else{
+        } else {
             /**
              *   GTC: Good Til Cancelled - remain open on the book until canceled
              *   GTT: Good Til Time - one min/hour/day via time_in_force
              *   IOC: Immediate Or Cancel - instantly cancel the remaining size of the limit order
              *   FOK: Fill Or Kill - orders are rejected if the entire size cannot be matched.
              */
-            if (!in_array($data['time_in_force'], array('GTC', 'GTT', 'IOC', 'FOK'))){
+            if (!in_array($data['time_in_force'], array('GTC', 'GTT', 'IOC', 'FOK'))) {
                 return "ERROR: time_in_force must be one of GTC/GTT/IOC/FOK";
             }
         }
-        if (!empty($data['cancel_after'])){
+        if (!empty($data['cancel_after'])) {
             /**
              *  one min, one hour or one day ..  no other options :/
              */
-            if (!in_array($data['cancel_after'], array('min', 'hour', 'day'))){
+            if (!in_array($data['cancel_after'], array('min', 'hour', 'day'))) {
                 return 'ERROR: cancel_after must be min, hour, day';
             }
-            if ($data['time_in_force'] != 'GTT'){
+            if ($data['time_in_force'] != 'GTT') {
                 $data['time_in_force'] = 'GTT'; // just make it GTT instead of error
                 #return 'ERROR: when using cancel_after time_in_force must be GTT';
             }
@@ -355,20 +356,20 @@ class Coinbase
         switch ($data['type']) {
             case 'stop':
                 $order['price'] = $data['price'];
-                if (!empty($data['size'])){
+                if (!empty($data['size'])) {
                     $order['size'] = $data['size'];
-                }elseif (!empty($data['funds'])){
+                } elseif (!empty($data['funds'])) {
                     $order['funds'] = $data['funds'];
-                }else{
+                } else {
                     return 'ERROR: market orders must have size or funds set.';
                 }
                 break;;
             case 'market':
-                if (!empty($data['size'])){
+                if (!empty($data['size'])) {
                     $order['size'] = $data['size'];
-                }elseif (!empty($data['funds'])){
+                } elseif (!empty($data['funds'])) {
                     $order['funds'] = $data['funds'];
-                }else{
+                } else {
                     return 'ERROR: market orders must have size or funds set.';
                 }
                 break;;
@@ -377,7 +378,7 @@ class Coinbase
                 $order['size'] = $data['size'];
                 $order['price'] = $data['price'];
                 $order['time_in_force'] = $data['time_in_force'];
-                if (!empty($data['cancel_after'])){
+                if (!empty($data['cancel_after'])) {
                     $order['cancel_after'] = $data['cancel_after'];
                 }
                 break;;
@@ -405,7 +406,8 @@ class Coinbase
      *
      * @return mixed
      */
-    public function get_endpoint($point, $data=null, $extra=null, $instrument='ETH-USD', $method='GET') {
+    public function get_endpoint($point, $data=null, $extra=null, $instrument='ETH-USD', $method='GET')
+    {
         $timestamp  = time();
         $key = $this->key;
         $passphrase = $this->passphrase;
@@ -430,7 +432,7 @@ class Coinbase
         #error_log($uri);
         #error_log(print_r($headers,1));
         $apireturn = $this->call($point, $headers, $data, $extra, $instrument, $method);
-        return json_decode($apireturn['body'],1);
+        return json_decode($apireturn['body'], 1);
     }
     /**
      * @param $timestamp
@@ -439,7 +441,8 @@ class Coinbase
      *
      * @return string
      */
-    public function sign($timestamp, $data, $secret) {
+    public function sign($timestamp, $data, $secret)
+    {
         return base64_encode(hash_hmac(
             'sha256',
             $timestamp . $data,
@@ -456,7 +459,8 @@ class Coinbase
      *
      * @return array
      */
-    public function call($endpoint, $headers, $body = '', $extra = null, $instrument='ETH-USD', $method='GET') {
+    public function call($endpoint, $headers, $body = '', $extra = null, $instrument='ETH-USD', $method='GET')
+    {
         extract($this->endpoints[$endpoint]);
         $uri = sprintf($uri, $instrument);
         #error_log('call : '.$uri);
@@ -475,12 +479,12 @@ class Coinbase
         $method = strtolower($method);
         if ($method == 'get') {
             $options[CURLOPT_HTTPGET] = 1;
-        } else if ($method == 'post') {
+        } elseif ($method == 'post') {
             $options[CURLOPT_POST] = 1;
             $options[CURLOPT_POSTFIELDS] = $body;
-        } else if ($method == 'delete') {
+        } elseif ($method == 'delete') {
             $options[CURLOPT_CUSTOMREQUEST] = "DELETE";
-        } else if ($method == 'put') {
+        } elseif ($method == 'put') {
             $options[CURLOPT_CUSTOMREQUEST] = "PUT";
             $options[CURLOPT_POSTFIELDS] = $body;
         }
@@ -497,7 +501,7 @@ class Coinbase
         $statusCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         curl_close($curl);
 
-        if($statusCode != 200) {
+        if ($statusCode != 200) {
             print_r($response);
             error_log('STATUS CODE', $statusCode . ' ' . $response);
         }

@@ -65,16 +65,16 @@ class CcxtRunnerCommand extends Command
      *
      * @return string
      */
-    function convert($size)
+    public function convert($size)
     {
         if ($size == 0) {
             return "0b";
         }
         $unit=array('b','kb','mb','gb','tb','pb');
         if ($size < 0) {
-            return "-" . @round(abs($size)/pow(1024,($i=floor(log(abs($size),1024)))),2).' '.$unit[$i];
+            return "-" . @round(abs($size)/pow(1024, ($i=floor(log(abs($size), 1024)))), 2).' '.$unit[$i];
         }
-        return @round($size/pow(1024,($i=floor(log($size,1024)))),2).' '.$unit[$i];
+        return @round($size/pow(1024, ($i=floor(log($size, 1024)))), 2).' '.$unit[$i];
     }
 
     /**
@@ -101,7 +101,7 @@ class CcxtRunnerCommand extends Command
      */
     public function handle()
     {
-        ini_set('memory_limit','256M');
+        ini_set('memory_limit', '256M');
         $console = new Console();
         stream_set_blocking(STDIN, 0);
 
@@ -109,7 +109,9 @@ class CcxtRunnerCommand extends Command
         $verbose = $this->option('v');
         $very_verbose = $this->option('vv');
 
-        if ($verbose){$this->profile(__LINE__);}
+        if ($verbose) {
+            $this->profile(__LINE__);
+        }
 
         $trading_pairs = $this->bowhead_config('trading_pairs');
         if (empty($trading_pairs)) {
@@ -138,7 +140,7 @@ class CcxtRunnerCommand extends Command
                 $ins['exchange'] = $exchange;
                 $ins['hasFetchTickers'] = $class->hasFetchTickers ?? 1;
                 $ins['hasFetchOHLCV'] = $class->hasFetchOHLCV ?? 1;
-                $ins['data'] = json_encode($class->markets_by_id,1);
+                $ins['data'] = json_encode($class->markets_by_id, 1);
 
                 $exchange_model = new Models\bh_exchanges();
                 $exchange_model::updateOrCreate(['exchange' => $exchange], $ins);
@@ -181,10 +183,12 @@ class CcxtRunnerCommand extends Command
             $exid = $ex->id;
             $exchange = $ex->exchange;
             $classname = '\ccxt\\' . $exchange;
-            ${'bh_'.$exchange} = new $classname(array (
+            ${'bh_'.$exchange} = new $classname(array(
                 'enableRateLimit' => true,
             ));
-            if ($verbose){echo "$exchange mem: ". $this->profile(__LINE__);}
+            if ($verbose) {
+                echo "$exchange mem: ". $this->profile(__LINE__);
+            }
         }
         $carbon = new Carbon();
 
@@ -192,7 +196,9 @@ class CcxtRunnerCommand extends Command
          * enter loop with our preferred (use = 1)
          */
         while (1) {
-            if ($verbose){$this->profile(__LINE__);}
+            if ($verbose) {
+                $this->profile(__LINE__);
+            }
 
             if (ord(fgetc(STDIN)) == 113) {
                 echo "QUIT detected...";
@@ -206,7 +212,7 @@ class CcxtRunnerCommand extends Command
                     $class = ${'bh_' . $exchange};
                 } else {
                     $classname = '\ccxt\\' . $exchange;
-                    ${'bh_'.$exchange} = new $classname(array (
+                    ${'bh_'.$exchange} = new $classname(array(
                         'enableRateLimit' => true,
                     ));
                     $class = ${'bh_' . $exchange};
@@ -224,13 +230,14 @@ class CcxtRunnerCommand extends Command
                             $tick['datetime'] = $dt[0];
                             $tickers_model = new Models\bh_tickers();
                             $tickers_model::updateOrCreate(
-                                ['bh_exchanges_id' => $exid, 'symbol' => $pair, 'timestamp' => $tick['timestamp']]
-                                , $tick);
+                                ['bh_exchanges_id' => $exid, 'symbol' => $pair, 'timestamp' => $tick['timestamp']],
+                                $tick
+                            );
                         }
                         if ($ex->hasFetchOHLCV) {
                             $ohlcc = $class->fetchOHLCV($pair, '1m', ($carbon->now()->subMinutes(5)->timestamp*1000), 3);
                             $ohlc_model = new Models\bh_ohlcvs();
-                            foreach($ohlcc as $oh){
+                            foreach ($ohlcc as $oh) {
                                 $ins = [];
                                 $ins['bh_exchanges_id'] = $exid;
                                 $ins['symbol'] = $pair;
@@ -243,14 +250,17 @@ class CcxtRunnerCommand extends Command
                                 $ins['volume'] = $oh[5];
 
                                 $ohlc_model::updateOrCreate(
-                                    ['bh_exchanges_id' => $exid, 'symbol' => $pair, 'timestamp' => $ins['timestamp']]
-                                    , $ins);
+                                    ['bh_exchanges_id' => $exid, 'symbol' => $pair, 'timestamp' => $ins['timestamp']],
+                                    $ins
+                                );
                             }
                         }
                     }
                 } catch (\Exception $e) {
-                    if ($verbose){$this->profile(__LINE__);}
-                    if($verbose) {
+                    if ($verbose) {
+                        $this->profile(__LINE__);
+                    }
+                    if ($verbose) {
                         echo "temp issue with $exchange\n";
                         if ($very_verbose) {
                             echo $e;
@@ -263,7 +273,7 @@ class CcxtRunnerCommand extends Command
                     echo "\n\t$exchange error (set this exchange to -1 in the database to disable it):\n $e\n\n";
                 }//*/
             }
-            if($verbose) {
+            if ($verbose) {
                 echo "line: " . __LINE__ . " mem: ". $this->convert(memory_get_usage()) ." used\n";
                 echo "Sleeping\n";
             }

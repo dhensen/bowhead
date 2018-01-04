@@ -24,7 +24,7 @@ class FxStreamCommand extends Command
      */
     protected $description = 'The Fx stream processor.';
 
-        /**
+    /**
      * Execute the console command.
      *
      * @return void
@@ -49,7 +49,7 @@ class FxStreamCommand extends Command
 
         stream_set_blocking(STDIN, 0);
         $output = $last = [];
-        while(1){
+        while (1) {
             if (ord(fgetc(STDIN)) == 113) {
                 echo "QUIT detected...";
                 return null;

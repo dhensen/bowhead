@@ -22,8 +22,8 @@ use Symfony\Component\Console\Input\InputArgument;
  *          CONDITIONS FOR A TEST.
  *
  */
-class RandomWalkCommand extends Command {
-
+class RandomWalkCommand extends Command
+{
     use Signals, Strategies, CandleMap, OHLC, Pivots; // add our traits
 
     /**
@@ -48,9 +48,15 @@ class RandomWalkCommand extends Command {
      */
     public function doColor($val)
     {
-        if ($val == 0){ return 'none'; }
-        if ($val == 1){ return 'green'; }
-        if ($val == -1){ return 'magenta'; }
+        if ($val == 0) {
+            return 'none';
+        }
+        if ($val == 1) {
+            return 'green';
+        }
+        if ($val == -1) {
+            return 'magenta';
+        }
         return 'none';
     }
 
@@ -83,7 +89,8 @@ class RandomWalkCommand extends Command {
     public function updateDb()
     {
         $wc = new Util\Whaleclub();
-        $ids = \DB::table('bowhead_strategy')->select(DB::raw('unix_timestamp(ctime) AS stime, position_id, pair'))->whereNull('profit')->get();;
+        $ids = \DB::table('bowhead_strategy')->select(DB::raw('unix_timestamp(ctime) AS stime, position_id, pair'))->whereNull('profit')->get();
+        ;
         if (!empty($ids)) {
             foreach ($ids as $id) {
                 $modify = 301;
@@ -134,7 +141,7 @@ class RandomWalkCommand extends Command {
         }
 
         $wc = new Util\Whaleclub();
-        $price = $wc->getPrice(str_replace('_','-',$instrument));
+        $price = $wc->getPrice(str_replace('_', '-', $instrument));
         $price = $price['price'];
 
         $fibs = $this->calcFibonacci([]); // defaults to 'BTC/USD';
@@ -144,7 +151,7 @@ class RandomWalkCommand extends Command {
         $order = [
              'direction'   => $direction
             ,'leverage'    => $lev
-            ,'market'      => str_replace('_','-',$instrument)
+            ,'market'      => str_replace('_', '-', $instrument)
             ,'take_profit' => $amt_takeprofit
             ,'stop_loss'   => $amt_stoploss
             ,'entry_price' => $entry ?? null
@@ -152,7 +159,7 @@ class RandomWalkCommand extends Command {
         ];
         $info =  $wc->positionNew($order);
         $err = $info['error']['code'] ?? null;
-        if (isset($info['error']) && is_array($info['error'])){
+        if (isset($info['error']) && is_array($info['error'])) {
             return ['error' => $err];
         }
         $insert['position_id'] = $info['id'];
@@ -187,7 +194,7 @@ class RandomWalkCommand extends Command {
         echo $console->colorize("PRESS ENTER TO CONTINUE\n");
         echo $console->colorize("------------------------------------------------------------------\n");
 
-        $handle = fopen ("php://stdin","r");
+        $handle = fopen("php://stdin", "r");
         $line = fgets($handle);
 
         echo "PRESS 'q' TO QUIT AND CLOSE ALL POSITIONS\n\n\n";
@@ -204,15 +211,15 @@ class RandomWalkCommand extends Command {
          *  $strategies = $this->strategies_1h  = sixty
          */
         $strategies = $this->strategies_all;
-        foreach($strategies as $k => $strategy) {
-            $strategies[$k] = str_replace('bowhead_','',$strategy);
+        foreach ($strategies as $k => $strategy) {
+            $strategies[$k] = str_replace('bowhead_', '', $strategy);
         }
 
         $list_indicators = array('adx','aroonosc','cmo','sar','cci','mfi','obv','stoch','rsi','macd','bollingerBands','atr','er','hli','ultosc','willr','roc','stochrsi');
         $list_signals    = ['rsi','stoch','stochrsi','macd','adx','willr','cci','atr','hli','ultosc','roc','er'];
 
 
-        while(1) {
+        while (1) {
             if (ord(fgetc(STDIN)) == 113) { // try to catch keypress 'q'
                 echo "QUIT detected...";
                 return null;
@@ -228,7 +235,7 @@ class RandomWalkCommand extends Command {
             $signals = $this->signals(1, 0, ['BTC/USD']);
 
             // trends
-            foreach($instruments as $instrument) {
+            foreach ($instruments as $instrument) {
                 $trends[$instrument]['httc'] = $ind->httc($instrument, $data);      # Hilbert Transform - Trend vs Cycle Mode
                 $trends[$instrument]['htl']  = $ind->htl($instrument, $data);       # Hilbert Transform - Instantaneous Trendline
                 $trends[$instrument]['hts']  = $ind->hts($instrument, $data, true); # Hilbert Transform - Sinewave
@@ -241,7 +248,7 @@ class RandomWalkCommand extends Command {
 
             foreach ($indicators as $indicator_name => $indicator_value) {
                 foreach ($signals['BTC/USD'] as $signal_name => $signal_value) {
-                    foreach($candles as $candle_name => $candle_value) {
+                    foreach ($candles as $candle_name => $candle_value) {
                         if ($signal_name == $indicator_name) {
                             continue;
                         }
@@ -267,6 +274,4 @@ class RandomWalkCommand extends Command {
 
         return null;
     }
-
-
 }

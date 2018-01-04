@@ -26,7 +26,8 @@ class Console
      *
      * @return array
      */
-    public function str_split_unicode($str, $l = 0) {
+    public function str_split_unicode($str, $l = 0)
+    {
         if ($l > 0) {
             $ret = array();
             $len = mb_strlen($str, "UTF-8");
@@ -38,7 +39,8 @@ class Console
         return preg_split("//u", $str, -1, PREG_SPLIT_NO_EMPTY);
     }
 
-    public function mb_str_pad($input, $pad_length, $pad_string=' ', $pad_type=STR_PAD_RIGHT) {
+    public function mb_str_pad($input, $pad_length, $pad_string=' ', $pad_type=STR_PAD_RIGHT)
+    {
         $diff = strlen($input) - mb_strlen($input);
         return str_pad($input, $pad_length+$diff, $pad_string, $pad_type);
     }
@@ -54,7 +56,7 @@ class Console
     public function tableFormatArray($dataSet, $headers = null, $use_theme='unicode', $set_width=0, $boldheaders=0)
     {
         // ☠
-        $dataSet = array_filter($dataSet,'strlen'); // filter out blanks
+        $dataSet = array_filter($dataSet, 'strlen'); // filter out blanks
         //                   '012345678901234'
         $_theme['unicode'] = '─═╔╗╚╝╤╧╟╢╠╣│║╪'; // unicode
         $_theme['x']       = '--xxxxxxxxxx||x'; // x
@@ -112,11 +114,10 @@ class Console
             }
             $output .= $theme[13] . $this->mb_str_pad(' ' . $hkey . ' ', $key_width + 2, ' ') . $theme[12] . str_pad(' ' . $hval . ' ', $val_width + 2, ' ', (is_numeric($hval) ? STR_PAD_LEFT: STR_PAD_RIGHT)) . $theme[13] . "\n";
             $output .= $theme[10] . str_repeat($theme[1], $key_width + 2) . $theme[14] . str_repeat($theme[1], $val_width + 2) . $theme[11]. "\n";
-
         }
         foreach ($dataSet as $key => $val) {
             if (strpos($key, '**')) {
-                $key = str_replace('**','', $key);
+                $key = str_replace('**', '', $key);
                 $tobold[] = $key;
                 $tobold[] = $val;
                 if (!in_array($use_theme, $min_themes)) {
@@ -144,7 +145,7 @@ class Console
         if (!in_array($use_theme, $min_themes)) {
             $output .= $theme[4] . str_repeat($theme[1], $key_width + 2) . $theme[7] . str_repeat($theme[1], $val_width + 2) . $theme[5]. "\n";
         }
-        $isCLI = ( php_sapi_name() == 'cli' );
+        $isCLI = (php_sapi_name() == 'cli');
         if ($boldheaders && !in_array($use_theme, array('wrap','format'))) {
             //array_filter($tobold);
             foreach ($tobold as $bold) {
@@ -170,7 +171,7 @@ class Console
      */
     public function colorize($str, $style='yellow', $type='reset')
     {
-         $styles = array(
+        $styles = array(
              'none' => null,
              'bold' => '1',
              'dark' => '2',
@@ -244,10 +245,11 @@ class Console
      *
      *      do a console progress bar.
      */
-    public function progressBar($done, $total) {
+    public function progressBar($done, $total)
+    {
         $perc = floor(($done / $total) * 100);
         $left = 100 - $perc;
-        $write = $this->colorize(sprintf("\033[0G\033[2K[%'={$perc}s>%-{$left}s] - $perc%% - $done/$total", "", ""),'light_gray');
+        $write = $this->colorize(sprintf("\033[0G\033[2K[%'={$perc}s>%-{$left}s] - $perc%% - $done/$total", "", ""), 'light_gray');
         fwrite(STDERR, $write);
     }
 
@@ -265,14 +267,15 @@ class Console
        and the dead time has no bearing on the changes.
        -joeldg
     */
-    public function remove_flatspots($arr, $pkey=true){
+    public function remove_flatspots($arr, $pkey=true)
+    {
         $oldval = 0;
         $ret = array();
-        while(list($key,$val) = each($arr)){
-            if($val <> $oldval){
-                if($pkey == true){
+        while (list($key, $val) = each($arr)) {
+            if ($val <> $oldval) {
+                if ($pkey == true) {
                     $ret[$key] = $val;
-                }else{
+                } else {
                     $ret[] = $val;
                 }
             }
@@ -286,14 +289,15 @@ class Console
        values in the second array..
        -joeldg
     */
-    public function dual_remove_flatspots($arr1, $arr2, $pkey=true){
+    public function dual_remove_flatspots($arr1, $arr2, $pkey=true)
+    {
         $oldval = 0;
-        while(list($key,$val) = each($arr1)){
-            if($val <> $oldval){
-                if($pkey == true){
+        while (list($key, $val) = each($arr1)) {
+            if ($val <> $oldval) {
+                if ($pkey == true) {
                     $ret[0][$key] = $val;
                     $ret[1][$key] = $arr2[$key];
-                }else{
+                } else {
                     $ret[0][] = $val;
                     $ret[1][] = $arr2[$key];
                 }
@@ -304,19 +308,27 @@ class Console
     }
 
     // return lowest val of array -joeldg
-    public function least($inarr){
+    public function least($inarr)
+    {
         $ret = $inarr[0];
-        for($i=0;$i<count($inarr);$i++){
-            if(intval($inarr[$i]) <= $ret){ $ret = $inarr[$i]; }
+        for ($i=0;$i<count($inarr);$i++) {
+            if (intval($inarr[$i]) <= $ret) {
+                $ret = $inarr[$i];
+            }
         }//rof
         return $ret;
     }// end function
     // return higest val of array -joeldg
-    public function most($inarr){
+    public function most($inarr)
+    {
         $ret = 0;
-        while(list($key,$val) = each($inarr)){
-            if ($ret==""){$ret = $val;}
-            if($ret <= intval($val)){ $ret = $val; }
+        while (list($key, $val) = each($inarr)) {
+            if ($ret=="") {
+                $ret = $val;
+            }
+            if ($ret <= intval($val)) {
+                $ret = $val;
+            }
         }//rof
         return $ret;
     }// end function
@@ -324,7 +336,7 @@ class Console
      array normalize function
      -joeldg
     */
-    public function normalize($arr,$LO=0.01,$HI=0.99)
+    public function normalize($arr, $LO=0.01, $HI=0.99)
     {
         $Min = +2147483647;
         $Max = -2147483647;
@@ -335,7 +347,9 @@ class Console
         $Mean = 0;
         for ($a=0; $a<count($arr); $a++) {
             $div = $Max-$Min;
-            if($div == 0){$div = 1;}
+            if ($div == 0) {
+                $div = 1;
+            }
             $arr [$a] = (($arr[$a]-$Min) / ($div)) * ($HI-$LO) + $LO;
             $Mean += $arr[$a] / count($arr);
         }
@@ -345,19 +359,21 @@ class Console
      array normalize function, preserve key
      -joeldg
     */
-    public function normalizekey($arr,$LO=0.01,$HI=0.99)
+    public function normalizekey($arr, $LO=0.01, $HI=0.99)
     {
         $Min = +2147483647;
         $Max = -2147483647;
-        while(list($key, $a)=each($arr)){
+        while (list($key, $a)=each($arr)) {
             $Min = min($Min, $arr[$key]);
             $Max = max($Max, $arr[$key]);
         }
         reset($arr);
         $Mean = 0;
-        while(list($key,$a)=each($arr)){
+        while (list($key, $a)=each($arr)) {
             $div = $Max-$Min;
-            if($div == 0){$div = 1;}
+            if ($div == 0) {
+                $div = 1;
+            }
             $arr [$key] = (($arr[$key]-$Min) / ($div)) * ($HI-$LO) + $LO;
             $Mean += $arr[$key] / count($arr);
         }
@@ -375,31 +391,34 @@ class Console
     #
     #    transform an array point to a position within the total
     #
-    public function point2arr($point, $total=20){
+    public function point2arr($point, $total=20)
+    {
         $p = round($point);
         $ret = array();
-        for($a=0;$a<$total;$a++){
-            if($a <= $p){
+        for ($a=0;$a<$total;$a++) {
+            if ($a <= $p) {
                 $ret[] = "%";#chr(127);
-            }else{
+            } else {
                 $ret[] = " ";
             }
         }
         return $ret;
     }
     // get the width and height of a unix terminal
-    public function get_term_specs(){
+    public function get_term_specs()
+    {
         $b = `stty -a`;
-        $c = explode("\n",$b);
+        $c = explode("\n", $b);
         $d = explode(";", $c[0]);
-        $f = explode(" ",$d[1]);
+        $f = explode(" ", $d[1]);
         $ret[h] = $f[2];
-        $f = explode(" ",$d[2]);
+        $f = explode(" ", $d[2]);
         $ret[w] = intval($f[2]);
         return $ret;
     }
 
-    public function genchars($char, $total, $title="", $echo=false, $way=STR_PAD_RIGHT){
+    public function genchars($char, $total, $title="", $echo=false, $way=STR_PAD_RIGHT)
+    {
         $ret = " +";
         $back = $title;
         $ret .= str_pad($back, $total+strlen($back)-strlen($title)-2, $char, $way);
@@ -407,28 +426,29 @@ class Console
         return $ret;
     }
     // vertical graph
-    public function print_vert_graph($arr, $total=20, $border="-"){
+    public function print_vert_graph($arr, $total=20, $border="-")
+    {
         $arr = $this->normalize($arr, 0, $total);
         $out[] = $this->genchars($border, $total);
-        for($a=0;$a<count($arr);$a++){
+        for ($a=0;$a<count($arr);$a++) {
             $out[] = $this->point2arr($arr[$a], $total);
         }
         $out[] = $this->genchars($border, $total);
-        for($a=0;$a<count($out);$a++){
-            for($b=0;$b<count($out[$a]);$b++){
+        for ($a=0;$a<count($out);$a++) {
+            for ($b=0;$b<count($out[$a]);$b++) {
                 echo $out[$a][$b];
             }
             echo "\n";
         }
-
     }
     // transform matrix
-    public function transformmat($arr,$total=20){
+    public function transformmat($arr, $total=20)
+    {
         $ret = array();
         $width = count($arr[0]);
         $c=$width-1;
-        for($w=0;$w<$width;$w++){
-            for($a=0;$a<count($arr);$a++){
+        for ($w=0;$w<$width;$w++) {
+            for ($a=0;$a<count($arr);$a++) {
                 $ret[$c][$a] = $arr[$a][$w];
             }
             $c--;
@@ -436,31 +456,34 @@ class Console
         return $ret;
     }
     // horizontal graphing
-    public function print_horz_graph($arr, $total=20, $border="-", $title="", $w=""){
+    public function print_horz_graph($arr, $total=20, $border="-", $title="", $w="")
+    {
         $ret = '';
-        if($w <> ""){
+        if ($w <> "") {
             array_reverse($arr);
             $end = count($arr)-1;
             reset($arr);
-            while(list($key,$val)=each($arr)){
+            while (list($key, $val)=each($arr)) {
                 $newarr[] = $arr[$key];
                 $end--;
-                if($end <= 0){break;}
+                if ($end <= 0) {
+                    break;
+                }
             }
             $arr=$newarr;
         }
         $bottom = "high: ".$this->most($arr).", low: ".$this->least($arr);
         $arr = $this->normalize($arr, 0, $total-2);
-        for($a=0;$a<count($arr);$a++){
+        for ($a=0;$a<count($arr);$a++) {
             $out[] = $this->point2arr($arr[$a], $total);
         }
 
-        $out = $this->transformmat($out,$total);
+        $out = $this->transformmat($out, $total);
         $ret .= $this->genchars("-", count($out[0])+2, $title, false);
         $ret .= "\n";
-        for($a=0;$a<count($out);$a++){
+        for ($a=0;$a<count($out);$a++) {
             $ret .=  " |";
-            for($b=0;$b<count($out[$a]);$b++){
+            for ($b=0;$b<count($out[$a]);$b++) {
                 $ret .= $out[$a][$b];
             }
             $ret .= "|";
@@ -469,7 +492,6 @@ class Console
         $ret .= $this->genchars("-", count($out[0])+2, $bottom, false, STR_PAD_LEFT);
         $ret .= "\n";
         return $ret;
-
     }
     /**
      *  example of use
