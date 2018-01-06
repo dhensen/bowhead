@@ -1,1 +1,9 @@
-docker build -t bowhead docker/ && docker run --name=bowhead -p 127.0.0.1:8080:8080 -v /etc/localtime:/etc/localtime:ro bowhead
+
+docker build -t bowhead docker/
+
+docker run --name=bowhead \
+    -p 127.0.0.1:8080:8080 \
+    -p 127.0.0.1:8000:8000 \
+    -v /etc/localtime:/etc/localtime:ro \
+    -v $PWD:/var/www/bowhead \
+    bowhead
